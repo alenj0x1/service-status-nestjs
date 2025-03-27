@@ -1,0 +1,200 @@
+<!-- public/index.html -->
+<!doctype html>
+<html>
+  <head>
+    <title>Service status</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+      *,
+      *::before,
+      *::after {
+        font-family: 'Poppins', sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+      }
+
+      .main-container {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 0 15px;
+      }
+
+      .title {
+        font-size: 2rem;
+        font-weight: 500;
+        margin: 20px 0;
+        color: rgb(71, 71, 71);
+      }
+
+      #data-items {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        max-width: 900px;
+        margin-bottom: 40px;
+      }
+
+      .data-item {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.03);
+        width: 100%;
+        border-radius: 5px;
+        border: 1px solid rgb(231, 231, 231);
+      }
+
+      .data-item-status-up {
+        border-left: 5px solid rgb(90, 240, 100);
+      }
+
+      .data-item:hover.data-item-status-up {
+        box-shadow: 0 0 5px 20px rgba(90, 240, 100, 0.05);
+      }
+
+      .data-item-status-intermittency {
+        border-left: 5px solid rgb(255, 208, 80);
+      }
+
+      .data-item:hover.data-item-status-intermittency {
+        box-shadow: 0 0 5px 20px rgba(255, 208, 80, 0.05);
+      }
+
+      .data-item-status-down {
+        border-left: 5px solid rgb(255, 80, 80);
+      }
+
+      .data-item:hover.data-item-status-down {
+        box-shadow: 0 0 5px 20px rgba(255, 80, 80, 0.05);
+      }
+
+      .data-item-header {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 10px;
+        padding: 0 20px;
+      }
+
+      .data-item-id {
+        font-size: 0.7rem;
+        color: rgb(100, 100, 100);
+      }
+
+      .data-item-status-circle {
+        display: block;
+        height: 10px;
+        width: 10px;
+        border-radius: 100%;
+        animation: circlePulse;
+        animation-duration: 1s;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+      }
+
+      .data-item-status-circle-up {
+        background-color: rgb(90, 240, 100);
+        box-shadow: 0 0 5px 5px rgba(90, 240, 100, 0.1);
+      }
+
+      .data-item-status-circle-down {
+        background-color: rgb(255, 80, 80);
+        box-shadow: 0 0 5px 5px rgba(255, 80, 80, 0.1);
+      }
+
+      .data-item-status-circle-intermittency {
+        background-color: rgb(255, 208, 80);
+        box-shadow: 0 0 5px 5px rgba(255, 80, 80, 0.1);
+      }
+
+      .data-item-main {
+        padding: 0 20px;
+        margin-bottom: 20px;
+      }
+
+      .data-item-content {
+        color: rgb(65, 65, 65);
+        font-size: 0.9rem;
+      }
+
+      .data-item-footer {
+        display: flex;
+        justify-content: end;
+        padding: 10px 20px;
+        border-top: 1px solid rgb(231, 231, 231);
+      }
+
+      .data-item-createdAt {
+        font-size: 0.6rem;
+      }
+
+      @media (max-width: 460px) {
+        .data-item-content {
+          font-size: 0.8rem;
+        }
+      }
+
+      @keyframes circlePulse {
+        to {
+          opacity: 0.5;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="main-container">
+        <h1 class="title">Service status</h1>
+
+        <div id="data-items"></div>
+      </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.js"></script>
+    <script>
+      const socket = io('http://localhost:3000');
+      const dataItems = document.getElementById('data-items');
+
+      socket.on('new-data', (data) => {
+        loadDataItem(data);
+      });
+
+      fetch('http://localhost:3000/all-data')
+        .then((response) => response.json())
+        .then((data) => {
+          data.forEach((dataItem) => loadDataItem(dataItem));
+        });
+
+      function loadDataItem(data) {
+        const div = document.createElement('div');
+        div.className = `data-item data-item-status-${data.status}`;
+        div.innerHTML = `
+          <header class='data-item-header'>
+            <span class='data-item-id'>${data.id}</span>
+            <span class='data-item-status-circle data-item-status-circle-${data.status}'></span>
+          </header>
+
+          <div class='data-item-main'>
+            <span class='data-item-content'>${data.content}</span>
+          </div>
+
+          <footer class='data-item-footer'>
+            <span class='data-item-createdAt'>${data.createdAt.toString()}</span>
+          </footer>
+        `;
+
+        dataItems.prepend(div);
+      }
+    </script>
+  </body>
+</html>
