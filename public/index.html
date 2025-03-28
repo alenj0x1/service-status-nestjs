@@ -46,11 +46,17 @@
       .data-item {
         display: flex;
         flex-direction: column;
-        gap: 5px;
+        gap: 2px;
         box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.03);
         width: 100%;
         border-radius: 5px;
         border: 1px solid rgb(231, 231, 231);
+        transition-duration: 50ms;
+      }
+
+      .data-item:hover {
+        scale: 1.01;
+        transition-duration: 100ms;
       }
 
       .data-item-status-up {
@@ -87,7 +93,7 @@
       }
 
       .data-item-id {
-        font-size: 0.7rem;
+        font-size: 0.6rem;
         color: rgb(100, 100, 100);
       }
 
@@ -118,24 +124,47 @@
       }
 
       .data-item-main {
+        display: flex;
+        flex-direction: column;
         padding: 0 20px;
         margin-bottom: 20px;
       }
 
-      .data-item-content {
-        color: rgb(65, 65, 65);
+      .data-item-title {
+        color: rgb(79, 79, 79);
+        font-weight: 500;
         font-size: 0.9rem;
+      }
+
+      .data-item-description {
+        color: rgb(130, 130, 130);
+        font-size: 0.9rem;
+      }
+
+      .data-item-trace {
+        font-size: 0.7rem;
+        color: rgb(92, 92, 92);
       }
 
       .data-item-footer {
         display: flex;
-        justify-content: end;
+        justify-content: space-between;
         padding: 10px 20px;
         border-top: 1px solid rgb(231, 231, 231);
       }
 
       .data-item-createdAt {
         font-size: 0.6rem;
+      }
+
+      .icon-container {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .icon {
+        height: 10px !important;
       }
 
       @media (max-width: 460px) {
@@ -180,15 +209,19 @@
         div.className = `data-item data-item-status-${data.status}`;
         div.innerHTML = `
           <header class='data-item-header'>
-            <span class='data-item-id'>${data.id}</span>
-            <span class='data-item-status-circle data-item-status-circle-${data.status}'></span>
+            <div class='icon-container'>
+              <svg class='icon' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 17V11" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> <circle cx="1" cy="1" r="1" transform="matrix(1 0 0 -1 11 9)" fill="#1C274C"></circle> <path d="M7 3.33782C8.47087 2.48697 10.1786 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 10.1786 2.48697 8.47087 3.33782 7" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> </g></svg>
+              <span class='data-item-id'>${data.id}</span>
+            </div>
           </header>
 
           <div class='data-item-main'>
-            <span class='data-item-content'>${data.content}</span>
+            <span class='data-item-title'>${data.title}</span>
+            <span class='data-item-description'>${data.description}</span>
           </div>
 
           <footer class='data-item-footer'>
+            <span class='data-item-trace'>${data.trace ? data.trace : '-'}</span>
             <span class='data-item-createdAt'>${data.createdAt.toString()}</span>
           </footer>
         `;

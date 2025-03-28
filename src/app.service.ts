@@ -7,11 +7,13 @@ import { DataCreateDto } from './dtos/data-create.dto';
 export class AppService {
   private dataItems: DataItem[] = [];
 
-  create({ content, status }: DataCreateDto): DataItem {
+  create({ title, description, status, trace }: DataCreateDto): DataItem {
     const newItem: DataItem = {
       id: uuidv4(),
-      content,
+      title,
+      description,
       status,
+      trace: trace ?? null,
       createdAt: new Date(),
     };
 
